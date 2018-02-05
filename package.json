@@ -1,0 +1,29 @@
+{
+  "name": "cattle-bridge",
+  "version": "0.1.0",
+  "description": "Super Cattle's Front-Back API  Bridge",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "compile": "rollup -c -w",
+    "build": "SET NODE_ENV=production rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-typescript2": "^0.10.0",
+    "rollup-plugin-uglify": "^3.0.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0"
+  }
+}

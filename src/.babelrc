@@ -1,0 +1,13 @@
+{
+    "presets": [
+      ["stage-2"],
+      ["es2015", {"modules": false}],
+      ["env", {
+        "modules": false,
+        "targets": {
+          "node": "6.10"
+        }
+      }]
+    ],
+    "plugins": ["external-helpers"]
+  }
