@@ -6,7 +6,17 @@ interface ChopFunc {
 }
 
 function pipeProcess (rawData: any, pipes: ChopFunc[]): any {
-  return pipes.reduce((prev: any, curt: ChopFunc): any => curt(prev), rawData)
+  return pipes.reduce((prev: any, curt: ChopFunc): any => {
+    if (isFunction(curt)) {
+      return curt(prev)
+    } else {
+      return curt
+    }
+  }, rawData)
+}
+
+function isFunction (fn) {
+  return Object.prototype.toString.call(fn) == '[object Function]';
 }
 
 export default pipeProcess
