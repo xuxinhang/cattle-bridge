@@ -10,7 +10,7 @@ function processFilter (filter: Filter, rawInputData: any, gchop: FilterFunc) {
 
   // 复制filter 的 Key为参数
   let contactedParams = {}
-  const allowedKeys = ['url', 'method', 'params', 'data']
+  const allowedKeys = ['url', 'method'] // 'params', 'data'
   for (let k of allowedKeys) {
     if (filter.hasOwnProperty(k)) {
       contactedParams[k] = filter[k]
