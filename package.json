@@ -1,15 +1,22 @@
 {
   "name": "cattle-bridge",
   "version": "0.1.0",
-  "description": "Super Cattle's Front-Back API  Bridge",
-  "main": ".eslintrc.js",
+  "description": "Front-Back API Bridge, which makes it convenient to link front-end network reuqests and APIs offered by back-end together.",
+  "keywords": ["API", "AJAX", "HTTP", "request", "interface", "conservation", "bridge", "cattle"],
+  "author": "Bob Green",
+  "license": "LGPL-3.0",
+
+  "main": "dist/cattle-bridge.umd.js",
   "scripts": {
     "compile": "rollup -c -w",
-    "build": "SET NODE_ENV=production rollup -c",
+    "build": "rollup -c",
     "test": "./node_modules/.bin/mocha"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist",
+    "*.md"
+  ],
+
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",

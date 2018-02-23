@@ -1,5 +1,5 @@
 
-# API参考 & 使用指引
+# Cattle Bridge
 
 ## About Cattle Bridge
 
@@ -24,10 +24,9 @@ Cattle Bridge 是为了适合实际业务场景而对 AJAX 操作的进一步封
 
 CattleBridge会对输入输出接口的数据按给定的逻辑进行处理，免除这些冗余的代码。
 
-
 ## Install
 1. git clone此仓库
-2. 运行 `npm build`
+2. 运行 `npm run build`
 3. 在`dist`目录下会生成UMD标准的模块文件
 4. 在需要的地方引入，同时支持 ES6 `import` 和CommonJS `require`
 
