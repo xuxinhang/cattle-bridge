@@ -110,18 +110,18 @@ apier.fetch('bindDevice', {deviceId: 10001})
 ```
 
 明显可以看到，这次请求中输入的数据是一个很简单的对象
-```json
+```js
 {deviceId: 10001}
 ```
 
 输入数据经过了一些处理才会交给axios
-```json
+```js
 {code: 10001}
 ```
 
 axios收到的服务器返回的数据有些复杂
 
-```json
+```js
 {
   status: 2200,
   error_msg: 'OK',
@@ -129,14 +129,14 @@ axios收到的服务器返回的数据有些复杂
 }
 ```
 
-经过CattleBridge处理，你的`.then`回调收到的参数是这样的。处理后的数据置于data字段，很简洁。
+经过CattleBridge处理，你的`.then`回调收到的参数是下面这样的。处理后的数据置于data字段，很简洁。
 
-```json
+```js
 {
   data: { result: true },
   stat: {
     code: 2200,
-    msg: 'OK',
+    msg: "OK",
     friMsg: "Your operation has been done!",
   },
 }
@@ -144,7 +144,7 @@ axios收到的服务器返回的数据有些复杂
 
 或许有时候接口的操作失败了
 
-```json
+```js
 {
   status: 4400,
   error_msg: 'too many requests',
@@ -153,12 +153,12 @@ axios收到的服务器返回的数据有些复杂
 ```
 
 你传入 `.catch` 的回调函数会收到
-```json
+```js
 {
   data: {result: false},
   stat: {
     code: 4400,
-    msg: 'too many requests',
+    msg: "too many requests",
     friMsg: "Please wait for a minute and then try again",
   },
 }
@@ -173,7 +173,7 @@ axios收到的服务器返回的数据有些复杂
 
 ## 构造函数 `new CattleBridge(options)`
 
-```json
+```typescript
 {
   debug: boolean, // false 
   stater: function , // required
