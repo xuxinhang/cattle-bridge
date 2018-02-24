@@ -5,6 +5,14 @@
   "keywords": ["API", "AJAX", "HTTP", "request", "interface", "conservation", "bridge", "cattle"],
   "author": "Bob Green",
   "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xuxinhang/cattle-bridge"
+  },
+  "bugs": {
+    "url": "https://github.com/xuxinhang/cattle-bridge/issues"
+  },
+  "homepage": "https://github.com/xuxinhang/cattle-bridge",
 
   "main": "dist/cattle-bridge.umd.js",
   "scripts": {
