@@ -1,8 +1,17 @@
 {
   "name": "cattle-bridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Front-Back API Bridge, which makes it convenient to link front-end network reuqests and APIs offered by back-end together.",
-  "keywords": ["API", "AJAX", "HTTP", "request", "interface", "conservation", "bridge", "cattle"],
+  "keywords": [
+    "API",
+    "AJAX",
+    "HTTP",
+    "request",
+    "interface",
+    "conservation",
+    "bridge",
+    "cattle"
+  ],
   "author": "Bob Green",
   "license": "LGPL-3.0",
   "repository": {
@@ -13,7 +22,6 @@
     "url": "https://github.com/xuxinhang/cattle-bridge/issues"
   },
   "homepage": "https://github.com/xuxinhang/cattle-bridge",
-
   "main": "dist/cattle-bridge.umd.js",
   "scripts": {
     "compile": "rollup -c -w",
@@ -24,7 +32,6 @@
     "dist",
     "*.md"
   ],
-
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",
