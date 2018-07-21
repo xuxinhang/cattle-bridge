@@ -1,60 +1,58 @@
-
 # Cattle Bridge
 
+`./README_CN.md` for translation.
+
 ## About Cattle Bridge
-
-Cattle Bridge 是为了适合实际业务场景而对 AJAX 操作的进一步封装。
-
-实际业务中，前后端分离应用广泛。但是HTTP返回的数据往往需要进行进一步的处理才可以用于前端逻辑。例如，前后端开发人员可能会约定：
-
+Cattle Bridge is a further encapsulation of network request operations that fits the actual application requirement.
+In the actual application, the seperation of front-end and back-end is widely used. However, the data returned by network requests often requires further processing before it can be used for front-end logic. For example, front-end developers might agree:
 ``` javascript
-/* 接口返回数据 */
+/* Return API data - an example of the common structure */
 {
-    "status": 2200, // 很多不同的接口的状态码
-    "error_msg": "OK",
-    "data": { // 接口返回的实用数据
-        "some field": "",
-        // some other data ...
-    },
-    "extra_info": {},
+  "status": 2200, // Various status code for APIs
+  "error_msg": "OK",
+  "data": { // Useful data returned by APIs. 
+    "some field": "",
+    // some other data ...
+  },
+  "extra_info": {},
 }
 ```
-
-这意味着前端需要对每个接口使用一套相同的代码进行处理。在较多接口的情况下，这些处理会分布在项目业务逻辑的各处。而且在这些基础约定变更的时候，维护会变得很困难。
-
-CattleBridge会对输入输出接口的数据按给定的逻辑进行处理，免除这些冗余的代码。
+This means that the front-end developers have to process each group of data offered by APIs, using the same code. When dealing with many APIs, these processes might be distributed throughout the whole project's files. And when the basic appointments are changed, maintenance could be a nightmare.
+Cattle Bridge can process the data from the input-or-output interface according to the given rules, as a reault, redundant codes could be eliminated.
 
 ## Install
-
 #### Use NPM
-```
+1. Install
+```bash
 npm install cattle-bridge -s
 ```
+4. Import when needed. As an UMD module it supports both ES6 `import` and CommonJS `require`.
+```js
+import CattleBridge from 'cattle-bridge';      // ES6
+const CattleBridge = require('cattle-bridge'); // CommonJS
+```
 
-#### Install Manually
+#### Install and build manually
+1. `git clone` this repository.
+2. Execute command: `npm run build`
+3. Then, a UMD module file would be created in `./dist`.
+4. Import when needed. The UMD module supports both ES6 `import` and CommonJS `require`
 
-1. git clone此仓库
-2. 运行 `npm run build`
-3. 在`dist`目录下会生成UMD标准的模块文件
-4. 在需要的地方引入，同时支持 ES6 `import` 和CommonJS `require`
+## Quick Start
 
-## 快速开始
-
-### 一个简单示例
-
+### A primary example
 ```js
 const CattleBridge = require('./cattle-bridge.umd.js');
 const axios = require('axios');
-
 const filters = {
-  bindDevice: { // 绑定设备
+  bindDevice: {
     method: 'POST',
     url: '/user_device/bind',
-    chop: inp => ({  // 对输入的数据进行处理
+    chop: inp => ({ // Do some handling before submited to the network requester.
       code: inp.deviceId,
     }),
     trim: rep => ({
-      result: !!rep.success, // 对AJAX返回的数据进行处理
+      result: !!rep.success, // Do some handling for data returned by network.
     }),
   },
 
@@ -98,36 +96,36 @@ const apier = new CattleBridge({
   requester: axios,
   gtrim: rep => resp.data || {},
 });
-
 ```
 
-现在你可以像下面这样请求接口了
+With the assistance of the configuration above, you can operate like the following now:
 
 ```js
 apier.fetch('bindDevice', {deviceId: 10001})
-.then(() => {
-  // The interface tell you task has been done 
-  console.log('The operation is done.');
-}, ({data, stat}) => {
-  // The interface is failed
-  console.log('Some error happend!');
-  console.log('Error Code: ', stat.code);
-  console.log('Tips: ', stat.friMsg);
-});
-
+  .then(() => {
+    // The interface tell you task has been done 
+    console.log('The operation is done.');
+  }, ({data, stat}) => {
+    // The interface is failed
+    console.log('Some error happend!');
+    console.log('Error Code: ', stat.code);
+    console.log('Tips: ', stat.friMsg);
+  });
 ```
 
-明显可以看到，这次请求中输入的数据是一个很简单的对象
+It is obvious that a pretty simple object is inputed as data for this request.
+
 ```js
-{deviceId: 10001}
+{ deviceId: 10001 }
 ```
 
-输入数据经过了一些处理才会交给axios
+The input data is processed before passed to axios.
+
 ```js
-{code: 10001}
+{ code: 10001 }
 ```
 
-axios收到的服务器返回的数据有些复杂
+Data returned by network responses is a bit complex.
 
 ```js
 {
@@ -137,7 +135,7 @@ axios收到的服务器返回的数据有些复杂
 }
 ```
 
-经过CattleBridge处理，你的`.then`回调收到的参数是下面这样的。处理后的数据置于data字段，很简洁。
+After processed by Cattle Bridge, the parameters received by your `.then` callback are as follows. The processed data is placed in the `data` key. So concise.
 
 ```js
 {
@@ -150,7 +148,7 @@ axios收到的服务器返回的数据有些复杂
 }
 ```
 
-或许有时候接口的操作失败了
+Maybe sometimes the operation of the API request failed. Error codes and error descriptions are attached to interface responses content.
 
 ```js
 {
@@ -160,26 +158,25 @@ axios收到的服务器返回的数据有些复杂
 }
 ```
 
-你传入 `.catch` 的回调函数会收到
+In this case, the callback function passed into `.catch` will receive:
 ```js
 {
-  data: {result: false},
+  data: { result: false },
   stat: {
     code: 4400,
     msg: "too many requests",
-    friMsg: "Please wait for a minute and then try again",
+    friMsg: "Please wait for a minute and then try again", // Friendly error message.
   },
 }
 ```
 
-可见，CattleBridge会根据你的配置对每个请求进行自动的处理，网络请求调用更加简洁。经过适当的处理，你收到的返回数据也更加便于读取和操作。同时，接口状态的成功或失败会分流至 `.then` 和 `.catch` 两个函数里——即使这两种情况下从HTTP请求的角度看网络请求都是成功的。
+So, Cattle Bridge can automatically proceed each network request according to configured rules. It is concise to call a network request and data received is easier to read and operate. Moreover, `.then` and `.catch` are called according to whether the API has a successive operating result or not - although both them are '200 OK' in the view of HTTP response.  
 
-上面是一个简短但明了的示例。CattleBridge还提供了更多的功能和更佳的灵活性。继续阅读此文档来看看CattleBridge还能做到什么。
+The above is a short but clear example. Cattle Bridge also offers more features and greater flexibility. Please read this document further to explore what else Cattle Bridge can do.
 
+# API Reference
 
-# API参考
-
-## 构造函数 `new CattleBridge(options)`
+## Constructor `new CattleBridge(options)`
 
 ```typescript
 {
@@ -188,102 +185,112 @@ axios收到的服务器返回的数据有些复杂
   requester: function,// required
   gchop: function, // optional
   gtrim: function, // optional
-  filters: // 过滤器列表
+  filters: // filter list
 }
 ```
-* debug: 设置为 true 打开调试信息
-* stater: 生成状态信息
-* requester: 发送网络请求，按照axios的API进行设计
-* gchop: 全局chop处理函数
-* gtrim: 全局trim处理函数
-* filters: 由数个filter组成的对象
+* debug: true to print debug console messages.
+* stater: a function to generate state information.
+* requester: a function used to send network requests. Compatible with axios API.
+* gchop: global chop processor.
+* gtrim: global trim processor.
+* filters: an object including several filters.
 
 ### filters
-由数个过滤器组成的对象。对象的值是filter，对应的键是接口调用名（对应实例 `.fetch` 方法的第一个参数）。
+An object including several filters. Each item has the interface call name as its key and the filter object as its value. The interface call name should be passed to `.fetch` method as its first parameters to use the corresponding filter or interface.
 
 ### gchop
-
-全局chop处理函数，在filter自身的chop之后进行处理。详见下文对 `filter.chop` 的说明。
+Global chop handler. It is used to proceed data after the current filter's chop handler.
+Refer to the description of `filter.chop` in the next section.
 
 ### trim
-
-全局trim处理函数，在filter自身的trim之前进行处理。详见下文对 `filter.trim` 的说明。
+Global trim handler. It is used to proceed data before the current filter's trim handler.
+Refer to the description of `filter.trim` in the next section.
 
 ### stater
+A function used to compute a state value for a response and return, which would be passed into request callbacks - both successive callback (.then) and failure callback (.catch). 
 
-一个函数。计算并返回状态值，生成的状态值会传入请求成功回调。详见 `.fetch` 方法。
+Refer to `.fetch` method for more information.
 
-此函数接受四个参数。
+4 parameters are avaliable.
 
-第一个参数是一个函数，需调用并传入布尔值，来标记这次结果的成功或失败。传入true表示接口状态为成功，传入false表示结果的失败。如果不调用此函数，任何的回调都不会被执行。
-
+The first parameter is a callback function that must be called to mark this response as a successive response or a fail one. 
+```js
+const stater = function (result, respData, respStat, currentFilter) {
+  result(true);  // The interface has finished asked operations successively.
+                 // Mark this response as a successive one to continue the next steps.
+  // - OR -
+  result(false); // The interface has not finished operations correctly.
+                 // Mark this response as a failure to continue the next steps.
+}
+```
+Neither callback (`.then`/`.catch`) will be called if the result-marking function is not called.
 
 ### requester
 
-网络请求器，一个函数，需符合 axios 的API。这意味着你可以直接使用axios。
+Network requester, a function that can send network requests. It should be compatible with the basic API of axios, which means axios can be directly applied to this item.
 
 ```javascript
 {
   // ...
   requester: require('axios'),
-  // 或者其他符合 axios API 的函数
+  // Or other functions compatible with axios' API.
   // ...
 }
 ```
 
-## filter 过滤器
+## filter
 
-过滤器选项告诉CattleBridge如何处理输入输出数据。CattleBridge对每个接口的处理都是根据各自过滤器来进行的。过滤器选项作为一个对象提供。
+`Filter` is a key option given as an object that tells Cattle Bridge how to proceed input and output data. Each interface is proceeded according to the corresponding filter.
 
 ```typescript
-{ // 选项一览
-  name: String, // optional 过滤器名称, 会出现在debug输出中
-  
-  url: Function, // 请求URL
-  method:  , // 请求方法
-  
-  chop: Function | Array[Function], // 对输入数据的处理 
-  trim: Function | Array[Function], // 对输出数据的处理 
-  
-  request: Function | any, // 计算 requester 接受的参数 
-  
-  handler: Function, // 自定义处理
+{ // Option overlook
+  name: String,   // (optional) filter name, used in console debug outputs.
 
+  url: Function,  // Network request URL
+  method: ,       // HTTP method
+  
+  chop: Function | Array[Function], // The handler for request input data  
+  trim: Function | Array[Function], // The handler for response output data
+   
+  request: Function | any, // Parameters accepted by the requester. 
+   
+  handler: Function,  // The customised handler for request, which operates
+                      // independently and return the response.
 }
 ```
 
 ### name
 
-*[optional]* 标记接口名称。如果开启了调试模式，控制台输出会使用此名称，增强可读性。
+*[optional]* filter name, used in console debug outputs to make them more readable.
 
+### `chop` and `gchop`
 
-### chop (inp) 和 gchop
+A function or a array constituted by functions.
 
-可以是函数或者是由它们构成的数组。
+The functions accept `inp` as data inputed by calling `.fetch` and return `data` to be sent to network, which is corresponding to `options.data` in axios' options.
 
-函数接受参数 `inp` 为输入数据，返回将要传送到请求器的 `data`。它对应着 axios 选项的 `options.data`。
+When using a function array, the input data of a function is what returned by the previous function. The first function in the array accepts data inputed by calling `.fetch` and the return value of the last function is used as requester's `options.data`.
 
-如果传入函数数组，每一函数的参数都是上一函数的返回值，第一个函数的参数为输入数据 `inp`，最后一个函数的返回值作为请求器的 `options.data`。
+`filter.gchop` is same as being attached to the end of all of chops.
 
-如果指定了 `filter.gchop` ，它相当于被附加在所有的 `chop` 之后。
+### `trim ` and `gtrim`
 
-### trim (rep) 和 gtrim
+A function or a array constituted by functions.
 
-可以是函数或者是由它们构成的数组。
+The function accepts network response data as its input (axios' `response.data`) and returns output data passed to Promise callback (then/catch).
 
-函数接受HTTP响应的数据，即 axios 的 `response.data` 。返回输出数据。输出数据会传给 `fetch.then` 或者 `fetch.catch` 回调。详见 `.fetch`。
+When using a function array, the input data of a function is what returned by the previous function. The first function in the array accepts network response data as input data and the return value of the last function is used as a part in parameters of callbacks (then/catch).
 
-如果传入函数数组，每一函数的参数都是上一函数的返回值。第一个函数的参数为axios的相应数据 `response.data` ，最后一个函数的返回值作为`fetch.then` 或者 `fetch.catch` 参数的一部分。
-
-如果指定了 `filter.gtrim` ，它相当于被附加在所有的 `trim` 之前。
+Assigned `filter.gtrim` is equal to be attached to the beginning of trims。
 
 ### request: Function | Object
 
-`request` 可以是一个函数或者是一个参数对象。
+`request` can be a function or an object.
 
-如果是一个对象，其值会作为请求参数传入axios中。
+Using an object, its return value is passed into requester as the network request options.
+Using a function, it accepts input data (proceeded by chops) as a parameter and returns an option object accepted by the requester.
 
-如果是一个函数，那么它接受输入数据作为参数，返回 axios 接受的请求参数对象。
+Refer to axios' API documents to find out the details of the option object. 
 
 ```javascript
 request(inp)
@@ -291,82 +298,81 @@ request(inp)
 
 ### url & method
 
-*[optional]* url 请求的URL地址
+*[optional]* url : Network request URL
 
-*[optional]* method 请求的HTTP方法
+*[optional]* method : HTTP request method
 
-这两个字段是为了方便使用而设置的，效果等同于把它们写为`requset.url `或者` requset.method`。
+The two fields are sweets, whose effects are same as the assigned `requset.url ` or `requset.method`.
 
-如果是函数。CattleBridge会将输入数据作为唯一的参数传入，并将返回值作为axios参数的对应字段传入。
-如果不是函数，CattleBridge会将其直接作为对应的axios参数传入。
+Using a function, input data would be passed into this function as the only parameter, and set its return value to requester's corresponding field.
+A given constant value would directly become requester's corresponding fields.
 
-### 不同字段之间的优先级和覆盖
+### Priority and coverage between different fields
 
-CattleBridge 允许你灵活地输入axios要求的参数。
+The network request parameter values are covered when various options are given.
 
-`chop / trim` 具有最高的优先级。`request`其次。`url / method` 具有最低的优先级。
+`chop / trim` have the highest priority. `request` is the second. `url / method` are less prior. 
 
-例如，如果你同时指定了 `chop` 和 `request` ，`request` 的data字段（如果你指定了的话）会被 `chop` 的值覆盖。同样地，如果提供了 `request` 参数，且有method字段，那么直接在filter里指定的 `method` 值就会被覆盖。
+For example, if both `chop` and `request` are assigned at the same time, the value given by  `data` field in  `request` is covered by the value given by `chop`. Similarly, if the `request` option is assigned and it offers `method` fields, the `method` value assigned in filter option object would be rewrite. 
 
+### `handler` : more flexibility allowed
 
-### handler
+Sometimes, it is not enough to just rely on allowed options offered by Cattle Bridge. Use `handler` option in the filter option object for more precise control in this case. 
 
-有时候，CattleBridge提供的处理流程是不够用的，所以CattleBridge允许使用 `handler` 自定义处理过程。
-
-`handler` 函数，接受数个参数。
+`handler` is a function accepting several parameters.
 
 ```javascript
 filter.handler(resolve, reject, name, input)
 ```
-| 参数 |  |
+| Parameters | |
 | -----| -----|
-| resolve | 同 Promise 中的 `resolve` 回调 |
-| reject | 同 Pormise 中的 `reject` 回调 |
-| name | 调用 `CattleBridge.prototype.fetch` 方法发起请求时传入的请求名称 `name` |
-| input | 调用 `CattleBridge.prototype.fetch` 方法发起请求时传入的请求输入数据 `input` |
+| resolve | Same as `resolve` in Promise |
+| reject | Same as `reject` in Promise |
+| name | Request interface name offered to `.fetch` method. |
+| input | Interface input data offered to `.fetch` method. |
 
-`handler` 选项允许你发起和处理更加复杂的请求。
+`handler` offers a way to generate and process more complex requests or responses. 
 
-如果你经常编写自己的 `Promise` 实例，你会感到非常熟悉。在需要的地方调用 `resolve()` 或 `reject()` 就可以完成一次成功的或者失败的调用。传入`resolve()` 或 `reject()` 的参数会直接传给`fetch.then` 和 `fetch.catch` 回调。传入的参数无需符合 `{data,stat}` 的形式，只要在`fetch` 调用对应的回调中对应起来就没有问题。
+You might have the familiar feelings if you often write Promise instances. A successful or failed callback is made by calling `resolve` or `reject` where needed. Parameters passed into `resolve` or `reject` are passed directly to the `fetch#then` or `fetch#catch` callbacks. The parameters passed in need not conform to the form of `{data,stat}` just like demo code in this document, various values are okay as long as there is no problem in the corresponding callback of the `fetch#then` or `fetch#catch`.
 
 
-## 开始发起请求
+## Start a request
 
-完成配置之后，你就可以使用CattleBridge发起请求了。
+Start some network requests after configuration.
+Now, you should have a instance of Cattle Bridge, whose `.fetch` method is used to construct a new request.
 
-你现在应该拿到了CattleBridge的实例，使用`CattleBridge.prototype.fetch`发起请求。
+`#fetch` accepts two parameters, request interface name and input data. It returns a Promise instance whose `.then` and `.catch` are used to handle the resolved and rejected states.
 
-`CattleBridge.prototype.fetch`接受两个参数：接口名称、输入数据。返回一个Promise对象，使用`.then`和`.catch`传入成功或失败时的处理函数。
+The functions passed to `.then` or `.catch` accept an object including `data` as response output data and `stat` as interface request state information.
 
-被传入的函数接受一个对象，包括输出数据`data`和状态信息`stat`。
 
-应该注意到，`data`和`stat`分别是`trim`函数与`stater`函数返回的值。这两个函数和它们返回的值由用户自己提供，CattleBridge不会作任何修改。
+It is worth noticing that `data` is the return value from `trim` function and `stat` is the return value from assigned `stater` function. The two functions and their return values are designed and provided by users themselves, which would not be read or modified by Cattle Bridge.
 
 ```javascript
 {
-  data: '',
+  data: '',   // Any value, any data type are acceptable .
   stat: ,
 }
 ```
-
-下面是一个很简单的示例。
+Below is a simple example.
 ```javascript
-var CattleBridge = new CattleBridge(options)
+var CattleBridge = new CattleBridge(options);
 
 CattleBridge.fetch('ImplementName', inputData)
-.then(({data, stat}) => {
-  // Succcess Handler
-}).catch(({data, stat}) => {
-  // Error Handler
-}))
+  .then(({data, stat}) => {
+    // Tips: destructuring assignment used in function parameters
+    // Succcess handler <=> Promise resolve
+  }).catch(({data, stat}) => {
+    // Error handler <=> Promise reject
+  }))
 ```
 
-## 使用其他的网络请求库
+## Using other HTTP request libraries
 
-CattleBridge按照axios的API进行设计，这意味着你可以直接将axios作为CattleBridge的`requester`参数，无需额外的配置。
+Cattle Bridge is designed according to the axios' API, which means you can use `axios` directly as Cattle Bridge's `requester` parameter, without additional configuration.
 
 ```javascript
-import axios from 'axios'
+import axios from 'axios';
 
 var CattleBridge = new CattleBridge({
   ...,
@@ -374,24 +380,8 @@ var CattleBridge = new CattleBridge({
   ...
 })
 ```
+However, axios is not available in some cases, for example, a special JavaScript runtime whose network request APIs are designed particularly or some conditions where other AJAX libraries are compulsory.  
 
-但是我们有时无法使用axios，例如我们在另一个 JS Runtime 中使用专门的网络请求API（一个典型的例子是微信小程序），或者是用于种种原因不得不使用其他的网络请求库。
-
-无论如何，仅需提供一个符合axios API的`requester`，就可以结合使用CattleBridge。CattleBridge对运行环境中的网络请求API不作任何假设。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Anyhow, just a requester that conforms to the axios API can drive Cattle Bridge (encapsulating is easy, generally speaking). Cattle Bridge makes no assumptions about the network request APIs in the runtime environment. It just plays a role as middle layers.
 
 
