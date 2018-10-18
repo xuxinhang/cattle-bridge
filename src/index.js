@@ -130,8 +130,6 @@ CattleBridge.prototype.fetch = function (name, input) {
         pinto.url = filter.url;
       }
 
-      console.log(pinto);
-
       ////////// 送出HTTP请求 //////////
 
       this.requester(pinto)
@@ -207,7 +205,6 @@ CattleBridge.prototype.printDebugMsg = function (a) {
 // Status 构造类型制造机
 function Status (code, msg, rawResponse) {
   this.code = parseInt(code);
-  // console.log(msg);
   this.rawMsg = (msg === undefined || msg === null) ? undefined : String(msg);
   this.msg = this.rawMsg;
   // this.friMsg = errorCodeMap[this.code];

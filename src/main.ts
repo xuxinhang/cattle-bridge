@@ -136,8 +136,6 @@ class CattleBridge {
       return new Promise ((resolve, reject) => {
         // 处理Filter
         let requestParams: any = processFilter.call(this, filter, input, this.gchop)
-        // DEV
-        console.log(requestParams)
 
         this.requester(requestParams)
         // 如果HTTP正常响应

@@ -1,19 +1,19 @@
 // Cattile Bridge - rollup config file
 
-import babel from 'rollup-plugin-babel';
-import typescript from 'rollup-plugin-typescript2';
-import cjs from 'rollup-plugin-commonjs';
-import uglify from 'rollup-plugin-uglify';
-import replace from 'rollup-plugin-replace';
+const babel = require('rollup-plugin-babel');
+const typescript = require('rollup-plugin-typescript2');
+const cjs = require('rollup-plugin-commonjs');
+const uglify = require('rollup-plugin-uglify');
+const replace = require('rollup-plugin-replace');
 
-export default {
+module.exports = {
   // input: 'src/index.js',
   input: 'src/main.ts',
   output: {
     file: 'dist/cattle-bridge.umd.js',
     format: 'umd',
     name: 'CattleBridge',
-    sourcemap: true,
+    // sourcemap: true,
   },
   plugins: [
     typescript({exclude: 'node_modules/**'}),
